@@ -13,8 +13,8 @@ pid ROOT + '/tmp/pids/unicorn.pid'
 
 timeout 120
 
-stdout_path ROOT + '/log/unicorn.stdout.log'
-stderr_path ROOT + '/log/unicorn.stderr.log'
+stdout_path ROOT + '/tmp/logs/unicorn.stdout.log'
+stderr_path ROOT + '/tmp/logs/unicorn.stderr.log'
 
 preload_app  true
 GC.respond_to?(:copy_on_write_friendly=) and GC.copy_on_write_friendly = true

@@ -149,7 +149,7 @@ class Isucon3App < Sinatra::Base
     user  = get_user
     require_user(user)
 
-    memos = mysql.xquery('SELECT id, content, is_private, created_at, updated_at FROM memos WHERE user=? ORDER BY created_at DESC', user["id"])
+    memos = mysql.xquery("SELECT id, substring_index(content, '\n', 1) AS title, is_private, created_at, updated_at FROM memos WHERE user=? ORDER BY created_at DESC", user["id"])
     erb :mypage, :layout => :base, :locals => {
       :user  => user,
       :memos => memos,

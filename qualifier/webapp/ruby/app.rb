@@ -6,6 +6,7 @@ require 'dalli'
 require 'rack/session/dalli'
 require 'erubis'
 require 'tempfile'
+require 'kramdown'
 
 class Isucon3App < Sinatra::Base
   $stdout.sync = true
@@ -48,12 +49,13 @@ class Isucon3App < Sinatra::Base
     end
 
     def gen_markdown(md)
-      tmp = Tempfile.open("isucontemp")
-      tmp.puts(md)
-      tmp.close
-      html = `../bin/markdown #{tmp.path}`
-      tmp.unlink
-      return html
+      Kramdown::Document.new(md).to_html
+      #tmp = Tempfile.open("isucontemp")
+      #tmp.puts(md)
+      #tmp.close
+      #html = `../bin/markdown #{tmp.path}`
+      #tmp.unlink
+      #return html
     end
 
     def anti_csrf

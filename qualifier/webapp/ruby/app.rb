@@ -82,7 +82,7 @@ class Isucon3App < Sinatra::Base
     user  = get_user
 
     total = mysql.query("SELECT count(id) AS c FROM memos WHERE is_private=0").first["c"]
-    memos = mysql.xquery("SELECT memos.id, memos.user, memos.content, memos.is_private, memos.created_at, memos.updated_at, users.username FROM memos LEFT OUTER JOIN users ON memos.user = users.id WHERE memos.is_private=0 ORDER BY memos.created_at DESC, memos.id DESC LIMIT 100 ")
+    memos = mysql.xquery("SELECT memos.id, memos.user, substring_index(memos.content, '\n', 1) AS title, memos.is_private, memos.created_at, memos.updated_at, users.username FROM memos LEFT OUTER JOIN users ON memos.user = users.id WHERE memos.is_private=0 ORDER BY memos.created_at DESC, memos.id DESC LIMIT 100 ")
     erb :index, :layout => :base, :locals => {
       :memos => memos,
       :page  => 0,

@@ -2,7 +2,7 @@ worker_processes 10
 preload_app true
 
 # ROOT
-ROOT = File.expand_path(File.dirname(__FILE__) + "/..")
+ROOT = "/var/www/html/isucon3/qualifier/webapp/ruby"
 
 working_directory ROOT
 

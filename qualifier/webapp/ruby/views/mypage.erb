@@ -1,4 +1,4 @@
-<form action="<%= url_for('/memo') %>" method="post">
+<form action="http://localhost/memo" method="post">
   <input type="hidden" name="sid" value="<%= session['token'] %>">
   <textarea name="content"></textarea>
   <br>
@@ -11,7 +11,7 @@
 <ul>
 <% memos.each do |memo| %>
 <li>
-  <a href="<%= url_for('/memo/') %><%= memo['id'] %>"><%= memo['title'] %></a> <%= memo['created_at'] %>
+  <a href="http://localhost/memo/<%= memo['id'] %>"><%= memo['title'] %></a> <%= memo['created_at'] %>
 <% if memo['is_private'] == 1 %>
 [private]
 <% end %>

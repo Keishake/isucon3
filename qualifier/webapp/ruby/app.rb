@@ -225,11 +225,12 @@ class Isucon3App < Sinatra::Base
       Time.now,
     )
     memo_id = mysql.last_id
-    redirect "/memo/#{memo_id}"
     if params["is_private"].to_i == 0
       total = dalli.get('total')
       dalli.set('total', total+1)
     end
+
+    redirect "/memo/#{memo_id}"
   end
 
   run! if app_file == $0

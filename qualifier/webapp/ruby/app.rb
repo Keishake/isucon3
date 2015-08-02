@@ -226,7 +226,7 @@ class Isucon3App < Sinatra::Base
     )
     memo_id = mysql.last_id
     redirect "/memo/#{memo_id}"
-    if is_private == 1
+    if params["is_private"].to_i == 1
       total = dalli.get('total')
       dalli.set('total', total+1)
     end

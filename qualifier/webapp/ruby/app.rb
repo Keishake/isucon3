@@ -18,6 +18,12 @@ class Isucon3App < Sinatra::Base
   helpers do
     set :erb, :escape_html => true
 
+    def dalli
+      return $dalli if $dalli
+      $dalli = Dalli::Client.new('localhost:11212')
+      $dalli
+    end
+
     def connection
       config = JSON.parse(IO.read(File.dirname(__FILE__) + "/../config/#{ ENV['ISUCON_ENV'] || 'local' }.json"))['database']
       return $mysql if $mysql
@@ -86,7 +92,8 @@ class Isucon3App < Sinatra::Base
     mysql = connection
     user  = get_user
 
-    total = mysql.query("SELECT count(id) AS c FROM memos WHERE is_private=0").first["c"]
+    # total = mysql.query("SELECT count(id) AS c FROM memos WHERE is_private=0").first["c"]
+    total = dalli.get('total')
     memos = mysql.xquery("SELECT memos.id, memos.user, substring_index(memos.content, '\n', 1) AS title, memos.is_private, memos.created_at, memos.updated_at, users.username FROM memos LEFT OUTER JOIN users ON memos.user = users.id WHERE memos.is_private=0 ORDER BY memos.created_at DESC, memos.id DESC LIMIT 100 ")
     erb :index, :layout => :base, :locals => {
       :memos => memos,
@@ -101,7 +108,8 @@ class Isucon3App < Sinatra::Base
     user  = get_user
 
     page  = params["page"].to_i
-    total = mysql.xquery('SELECT count(id) AS c FROM memos WHERE is_private=0').first["c"]
+    # total = mysql.xquery('SELECT count(id) AS c FROM memos WHERE is_private=0').first["c"]
+    total = dalli.get('total')
     memos = mysql.xquery("SELECT memos.id, memos.user, memos.content, memos.is_private, memos.created_at, memos.updated_at, users.username FROM memos LEFT OUTER JOIN users ON memos.user = users.id WHERE memos.is_private=0 ORDER BY memos.created_at DESC, memos.id DESC LIMIT 100 OFFSET #{page * 100}")
     if memos.count == 0
       halt 404, "404 Not Found"
@@ -218,6 +226,10 @@ class Isucon3App < Sinatra::Base
     )
     memo_id = mysql.last_id
     redirect "/memo/#{memo_id}"
+    if is_private == 1
+      total = dalli.get('total')
+      dalli.set('total', total+1)
+    end
   end
 
   run! if app_file == $0

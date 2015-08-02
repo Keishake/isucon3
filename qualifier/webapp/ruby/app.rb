@@ -94,7 +94,10 @@ class Isucon3App < Sinatra::Base
 
     # total = mysql.query("SELECT count(id) AS c FROM memos WHERE is_private=0").first["c"]
     total = dalli.get('total')
-    memos = mysql.xquery("SELECT memos.id, memos.user, substring_index(memos.content, '\n', 1) AS title, memos.is_private, memos.created_at, memos.updated_at, users.username FROM memos LEFT OUTER JOIN users ON memos.user = users.id WHERE memos.is_private=0 ORDER BY memos.created_at DESC, memos.id DESC LIMIT 100 ")
+    #memos = mysql.xquery("SELECT memos.id, memos.user, substring_index(memos.content, '\n', 1) AS title, memos.is_private, memos.created_at, memos.updated_at, users.username FROM memos LEFT OUTER JOIN users ON memos.user = users.id WHERE memos.is_private=0 ORDER BY memos.created_at DESC, memos.id DESC LIMIT 100 ")
+    memos = mysql.xquery("SELECT memos.*,users.username FROM memos JOIN users ON users.id = memos.user JOIN
+ (SELECT id FROM memos WHERE is_private=0 ORDER BY created_at DESC LIMIT 100)
+ AS tmp ON tmp.id = memos.id;")
     erb :index, :layout => :base, :locals => {
       :memos => memos,
       :page  => 0,

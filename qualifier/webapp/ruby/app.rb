@@ -36,7 +36,7 @@ class Isucon3App < Sinatra::Base
       user_id = session["user_id"]
       username = session["username"]
       if user_id && username
-        user = {"user_id" : user_id, "username" : username}
+        user = {"user_id" => user_id, "username" => username}
         #user = mysql.xquery("SELECT * FROM users WHERE id=?", user_id).first
         headers "Cache-Control" => "private"
       end

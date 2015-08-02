@@ -32,12 +32,12 @@ class Isucon3App < Sinatra::Base
     end
 
     def get_user
-      # mysql = connection
+      #mysql = connection
       user_id = session["user_id"]
       username = session["username"]
-      if user_id && username
+      if user_id
         user = {
-          "user_id" => user_id,
+          "id" => user_id,
           "username" => username
         }
         #user = mysql.xquery("SELECT * FROM users WHERE id=?", user_id).first
